@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gxl.dao.AddressDao">
+	<resultMap id="addressResultMap" type="com.gxl.model.Address">
+		<id property="aId" column="a_id" />
+		<result property="uId" column="u_id" />
+		<result property="aName" column="a_name" />
+		<result property="aPhone" column="a_phone" />
+		<result property="aDetail" column="a_detail" />
+		<result property="aState" column="a_state" />
+	</resultMap>
+
+	<select id="findByUid" resultMap="addressResultMap" >
+		select * from address where u_id = #{uId}
+	</select>
+
+	<insert id="addAddress" parameterType="Address">
+		insert into address(u_id, a_name, a_phone, a_detail, a_state) values(#{uId}, #{aName}, #{aPhone}, #{aDetail}, #{aState})
+	</insert>
+
+	<delete id="delete" parameterType="int" >
+		delete from address where a_id = #{aId}
+	</delete>
+
+	<update id="setDefault" parameterType="int">
+		update address set a_state = 1 where a_id = #{aId}
+	</update>
+
+	<update id="setNoDefault" parameterType="int">
+		update address set a_state = 0 where u_id = #{uId} and a_state = 1
+	</update>
+
+	<update id="update" parameterType="Address">
+		update address set a_name=#{aName}, a_phone=#{aPhone}, a_detail=#{aDetail} where a_id=#{aId}
+	</update>
+</mapper>

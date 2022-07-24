@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gxl.dao.ItemDao">
+	<resultMap id="itemResultMap" type="com.gxl.model.Item">
+		<id property="iId" column="i_id"/>
+		<result property="oId" column="o_id"/>
+		<result property="pId" column="p_id"/>
+		<result property="iCount" column="i_count"/>
+		<result property="iNum" column="i_num"/>
+		<association property="product">
+			<id property="pId" column="p_id"/>
+			<result property="tId" column="t_id"/>
+			<result property="pName" column="p_name"/>
+			<result property="pTime" column="p_time"/>
+			<result property="pImage" column="p_image"/>
+			<result property="pPrice" column="p_price"/>
+			<result property="pState" column="p_state"/>
+			<result property="pInfo" column="p_info"/>
+		</association>
+	</resultMap>
+
+	<insert id="insertItems" parameterType="List">
+		insert into item(o_id, p_id, i_count, i_num)
+		values
+		<foreach collection="list" item="items" separator=",">
+			(#{items.oId}, #{items.pId}, #{items.iCount}, #{items.iNum})
+		</foreach>
+	</insert>
+
+	<select id="findByOid" resultMap="itemResultMap" resultType="Item">
+		select *
+		from item,
+			 product
+		where o_id = #{oId}
+		  and item.p_id = product.p_id
+	</select>
+
+	<delete id="deleteByOid" parameterType="String">
+		delete
+		from item
+		where o_id = #{oId}
+	</delete>
+</mapper>

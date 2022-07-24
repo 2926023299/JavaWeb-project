@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gxl.dao.CartDao">
+	<resultMap id="typeMap" type="com.gxl.model.Cart">
+		<id property="cId" column="c_id"/>
+		<result property="uId" column="u_id"/>
+		<result property="pId" column="p_id"/>
+		<result property="cNum" column="c_num"/>
+		<result property="cCount" column="c_count"/>
+		<!-- 配置一对一的映射数据信息 -->
+		<association property="product">
+			<id property="pId" column="p_id"/>
+			<result property="tId" column="t_id"/>
+			<result property="pName" column="p_name"/>
+			<result property="pInfo" column="p_info"/>
+			<result property="pPrice" column="p_price"/>
+			<result property="pState" column="p_state"/>
+			<result property="pImage" column="p_image"/>
+			<result property="pTime" column="p_time"/>
+		</association>
+	</resultMap>
+
+	<select id="hasCart" resultMap="typeMap" parameterType="int">
+		select * from cart, product
+			where cart.p_id = product.p_id
+		    and cart.u_id = #{uid}
+			and cart.p_id = #{pid}
+	</select>
+
+	<update id="updateCart" parameterType="com.gxl.model.Cart">
+		update cart
+		set c_num = #{cNum},
+			c_count = #{cCount}
+		where c_id = #{cId}
+	</update>
+
+	<insert id="insert" parameterType="com.gxl.model.Cart">
+		insert into cart(c_id, u_id, p_id, c_num, c_count)
+		values (#{cId}, #{uId}, #{pId}, #{cNum}, #{cCount})
+	</insert>
+
+	<select id="findAll" resultType="Cart" resultMap="typeMap">
+		select * from cart, product
+		where cart.p_id = product.p_id
+		and cart.u_id = #{uid}
+	</select>
+
+	<delete id="delete" parameterType="int">
+		delete from cart
+		where c_id = #{cId}
+	</delete>
+
+	<select id="findByCid" resultType="Cart" resultMap="typeMap">
+		select * from cart, product
+		where cart.p_id = product.p_id
+		and c_id = #{cId}
+	</select>
+
+	<delete id="clearCart" parameterType="int">
+		delete from cart
+		where u_id = #{uid}
+	</delete>
+</mapper>
