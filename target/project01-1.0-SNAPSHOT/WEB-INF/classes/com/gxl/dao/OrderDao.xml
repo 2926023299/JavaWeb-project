@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gxl.dao.OrderDao">
+	<resultMap id="orderResultMap" type="com.gxl.model.Orders">
+		<id property="oId" column="o_id"/>
+		<result property="uId" column="u_id"/>
+		<result property="aId" column="a_id"/>
+		<result property="oTime" column="o_time"/>
+		<result property="oCount" column="o_count"/>
+		<result property="oState" column="o_state"/>
+		<!-- 配置一对一的映射数据信息 -->
+		<association property="address">
+			<id property="aId" column="a_id"/>
+			<result property="uId" column="u_id"/>
+			<result property="aName" column="a_name"/>
+			<result property="aDetail" column="a_detail"/>
+			<result property="aPhone" column="a_phone"/>
+			<result property="aState" column="a_state"/>
+		</association>
+	</resultMap>
+
+	<insert id="insertOrders" parameterType="Orders">
+		insert into orders(o_id, u_id, a_id, o_time, o_count, o_state)
+		values (#{oId}, #{uId}, #{aId}, #{oTime}, #{oCount}, #{oState})
+	</insert>
+
+	<select id="findByUid" resultMap="orderResultMap">
+		select * from orders, address where orders.u_id = #{uId} and orders.a_id = address.a_id
+	</select>
+
+	<select id="findByOid" resultMap="orderResultMap">
+		select * from orders, address where orders.o_id = #{oId} and orders.a_id = address.a_id
+	</select>
+
+	<update id="updateStatus">
+		update orders set o_state = 2 where o_id = #{oId}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		delete from orders where o_id = #{oId}
+	</delete>
+
+	<update id="changeStatus">
+		update orders set o_state = #{status} where o_id = #{oId}
+	</update>
+</mapper>
